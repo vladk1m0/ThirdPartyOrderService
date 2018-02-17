@@ -1,0 +1,99 @@
+group 'ru.gosuslugi.im.ws'
+version '1.0.0-SNAPSHOT'
+
+configurations {
+    jaxb
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// tag::wsdl[]
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "${projectDir}/src/main/resources/wsdl/ThirdPartyOrderService.wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema) {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir,
+                    source: sourceCompatibility, target: targetCompatibility,
+                    debug: true,
+                    debugLevel: "lines,vars,source",
+                    includeantruntime: false,
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+// end::wsdl[]
+
+dependencies {
+    compile("javax.servlet:javax.servlet-api:3.1.0")
+    compile("org.apache.commons:commons-lang3:3.7")
+    compile("commons-logging:commons-logging:1.1.1")
+    compile("xalan:xalan:2.7.0")
+
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.ws:spring-ws-core")
+    compile("org.springframework.ws:spring-ws-support")
+
+    // Signature dependencies
+    compile("org.bouncycastle:bcprov-jdk15on:1.50")
+    compile("org.bouncycastle:bcpkix-jdk15on:1.50")
+    compile("org.apache.santuario:xmlsec:1.5.8")
+    compile('org.apache.ws.security:wss4j:1.6.6') {
+        exclude group: 'org.opensaml', module: 'opensaml'
+    }
+
+    compile(fileTree("${projectDir}/libs"))
+
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
+
+    testCompile("junit:junit:4.12")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+jar {
+    from genJaxb.classesDir
+}

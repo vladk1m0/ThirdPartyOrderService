@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:tpos="http://im.gosuslugi.ru/types/ThirdPartyOrderServiceTypes/"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://im.gosuslugi.ru/types/ThirdPartyOrderServiceTypes/">
+
+    <xs:element name="AddUserOrderRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="person" type="tpos:Person" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="serviceFormCode" type="tpos:String100" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="serviceCode" type="tpos:String100" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="draft" type="tpos:Draft" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="Person">
+        <xs:sequence>
+            <xs:element name="snils" type="tpos:SNILS" minOccurs="0"/>
+            <xs:element name="firstName" type="tpos:String100" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="secondName" type="tpos:String100" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="lastName" type="tpos:String100" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="bdate" type="xs:date" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="passport" type="tpos:PersonPassport" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="phone" type="tpos:Phone" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PersonPassport">
+        <xs:sequence>
+            <xs:element name="series" type="tpos:PassportSeries" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="num" type="tpos:PassportNumber" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="issueDate" type="xs:date" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="issueCode" type="tpos:PassportIssueCode" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="AddUserOrderResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tpRequestId" type="xs:long" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Draft">
+        <xs:sequence>
+            <xs:element name="version" type="xs:long"/>
+            <xs:element name="fields" type="tpos:ListFields"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ListFields">
+        <xs:sequence>
+            <xs:element name="draftField" type="tpos:DraftField"
+                        maxOccurs="unbounded" minOccurs="0">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DraftField">
+        <xs:sequence>
+            <xs:element name="code" type="xs:string"/>
+            <!--<xs:element name="name" type="xs:string"/>-->
+            <!--<xs:element name="descr" type="xs:string"/>-->
+            <xs:element name="content" type="tpos:ListContent"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ListContent">
+        <xs:sequence>
+            <xs:element name="content" type="tpos:Content" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Content">
+        <xs:sequence>
+            <xs:element name="value" type="xs:string"/>
+            <xs:element name="orderNumber" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:element name="RequestStatus">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tpRequestId" type="xs:long" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="statusCode" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:simpleType name="String100">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:element name="GetLimitResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="limit" type="tpos:LimitStats" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="stat" type="tpos:LimitStats" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="LimitStats">
+        <xs:sequence>
+            <xs:element name="day" type="xs:long" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="month" type="xs:long" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="total" type="xs:long" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="SNILS">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d{3}-\d{3}-\d{3} \d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PassportSeries">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d{2} \d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PassportNumber">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d{6}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PassportIssueCode">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d{3}-\d{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Phone">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</schema>

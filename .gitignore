@@ -1,0 +1,32 @@
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+
+# Build Files #
+
+bin/
+target/
+build/
+out/
+.gradle/
+.vscode/
+.idea/
+
+# Eclipse Project Files #
+
+.classpath
+.project
+.settings
+
+# IntelliJ IDEA Files #
+
+*.iml
+*.ipr
+*.iws
+# Test files
+
+*-uploaded
+
+dependency-reduced-pom.xml
+README.html

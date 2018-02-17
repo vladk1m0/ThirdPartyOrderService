@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://im.gosuslugi.ru/ThirdPartyOrderService/"
+                  xmlns:smev="http://smev.gosuslugi.ru/rev120315"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  name="ThirdPartyOrderService"
+                  targetNamespace="http://im.gosuslugi.ru/ThirdPartyOrderService/">
+
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://im.gosuslugi.ru/types/ThirdPartyOrderServiceTypes/"
+                        schemaLocation="types/ThirdPartyOrderServiceTypes.xsd"/>
+            <xsd:import namespace="http://smev.gosuslugi.ru/rev120315"
+                        schemaLocation="types/smev.gosuslugi.ru.rev120315.xsd"/>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <!--  Add user order -->
+    <wsdl:message name="addUserOrderRequest">
+        <wsdl:part name="smevHeader" element="smev:Header"/>
+        <wsdl:part name="addUserOrderMessage" element="smev:BaseMessage"/>
+    </wsdl:message>
+    <wsdl:message name="addUserOrderResponse">
+        <wsdl:part name="addUserOrderResponse" element="smev:BaseMessage"/>
+    </wsdl:message>
+
+    <!-- get limit -->
+    <wsdl:message name="getLimitRequest">
+        <wsdl:part name="smevHeader" element="smev:Header"/>
+        <wsdl:part name="getLimitMessage" element="smev:BaseMessage"/>
+    </wsdl:message>
+    <wsdl:message name="getLimitResponse">
+        <wsdl:part name="getLimitResponse" element="smev:BaseMessage"/>
+    </wsdl:message>
+
+    <wsdl:portType name="TPOSEndpoint">
+
+        <wsdl:operation name="addUserOrder">
+            <wsdl:input name="addUserOrderRequest" message="tns:addUserOrderRequest">
+            </wsdl:input>
+            <wsdl:output name="addUserOrderResponse" message="tns:addUserOrderResponse">
+            </wsdl:output>
+        </wsdl:operation>
+
+
+        <wsdl:operation name="getLimit">
+            <wsdl:input name="getLimitRequest" message="tns:getLimitRequest">
+            </wsdl:input>
+            <wsdl:output name="getLimitResponse" message="tns:getLimitResponse">
+            </wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <wsdl:binding name="ThirdPartyOrderServiceBinding" type="tns:TPOSEndpoint">
+
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <wsdl:operation name="addUserOrder">
+            <soap:operation soapAction="http://im.gosuslugi.ru/ThirdPartyOrderService/addUserOrder" style="document"/>
+            <wsdl:input name="addUserOrderRequest">
+                <soap:header message="tns:addUserOrderRequest" part="smevHeader" use="literal" wsdl:required="false"/>
+                <soap:body parts="addUserOrderMessage" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="addUserOrderResponse">
+                <soap:body parts="addUserOrderResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getLimit">
+            <soap:operation soapAction="http://im.gosuslugi.ru/ThirdPartyOrderService/getLimit" style="document"/>
+            <wsdl:input name="getLimitRequest">
+                <soap:header message="tns:getLimitRequest" part="smevHeader" use="literal" wsdl:required="false"/>
+                <soap:body parts="getLimitMessage" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getLimitResponse">
+                <soap:body parts="getLimitResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <wsdl:service name="ThirdPartyOrderService">
+
+        <wsdl:port name="ThirdPartyOrderService" binding="tns:ThirdPartyOrderServiceBinding">
+            <soap:address location=""/>
+        </wsdl:port>
+
+    </wsdl:service>
+
+</wsdl:definitions>
