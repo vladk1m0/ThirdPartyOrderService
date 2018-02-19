@@ -1,6 +1,6 @@
 Пример наивной реализации веб-сервиса [SID0004764](http://smev.gosuslugi.ru/portal/services.jsp#!/F/IntModulP/1.00/p00smev/SID0004152) СМЭВ 2.х на базе spring-ws.
 =========
-##### Сборка проекта.
+##### Сборка проекта[![Build Status](https://travis-ci.org/vladk1m0/ThirdPartyOrderService.svg?branch=release-1.0.0)](https://travis-ci.org/vladk1m0/ThirdPartyOrderService)
 Сборка осуществляется командой: 
 
 ```
